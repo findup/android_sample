@@ -24,10 +24,14 @@ import android.widget.Toast;
 public class SensorTestActivity extends Activity {
 	
 	ListView listview;
-	TextView sensorNameView;
-	TextView textview;
+	TextView accuracyTextView;
+	TextView sensorValuesTextView;
+	TextView sensorInfoTextView;
 	SensorListenerEx sensorListener = new SensorListenerEx();
     SensorManager sm;
+    
+    // „Éá„Éê„Ç§„Çπ„ÅÆ„Çª„É≥„Çµ„ÉºÊÉÖÂ†±„ÅÆ‰øùÊåÅ
+    List<Sensor> sensorList;
 
 	private final String LOGTAG = SensorTestActivity.class.getName();
 	
@@ -38,31 +42,24 @@ public class SensorTestActivity extends Activity {
         setContentView(R.layout.sensor);
         
         listview = (ListView)findViewById(R.id.ListView01);
-        textview = (TextView)findViewById(R.id.TextView01);
-        sensorNameView = (TextView)findViewById(R.id.TextView00);
+        accuracyTextView = (TextView)findViewById(R.id.SensorAccuracy);
+        sensorValuesTextView = (TextView)findViewById(R.id.SensorValues);
+        sensorInfoTextView = (TextView)findViewById(R.id.SensorInfo);
         
         sm = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
         
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				// TODO Auto-generated method stub
-				Toast.makeText(getApplicationContext(), "listview Onclick()", Toast.LENGTH_SHORT).show();
-			}
-		});
-        
+        listview.setOnItemClickListener(itemClickListener);
     }
     
 	@Override
 	protected void onResume() {
-        // ArrayAdaptorÇégÇ¡ÇƒListViewÇ…çÄñ⁄Çí«â¡Ç∑ÇÈ
+
 		int layout = R.layout.list;
         ArrayAdapter<String> listadapter = new ArrayAdapter<String>(this, layout);
                 
-        // ÉZÉìÉTÅ[ÇÃéÌóﬁÇàÍóóï\é¶
+        // „Çª„É≥„Çµ„ÉºÊÉÖÂ†±„ÅÆÂèñÂæó
         SensorManager sm = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
-        List<Sensor> sensorList = sm.getSensorList(Sensor.TYPE_ALL);
+        sensorList = sm.getSensorList(Sensor.TYPE_ALL);
         for (Sensor sl : sensorList) {
         	StringBuffer sb = new StringBuffer();
         	sb.append("Name: " + sl.getName());
@@ -70,23 +67,11 @@ public class SensorTestActivity extends Activity {
         	sb.append("Type: " + getSensorTypeName(sl.getType()));
         	sb.append("\n");
         	sb.append("Vendor: " + sl.getVendor());
-        	sb.append("\n");
-        	sb.append("MaximumRange: " + sl.getMaximumRange());
-        	sb.append("\n");
-        	sb.append("Power: " + sl.getPower());
-        	sb.append("\n");
-        	sb.append("Resolution: " + sl.getResolution());
-//        	sb.append("\n");
-//        	sb.append("Version: " + sl.getVersion());
         	listadapter.add(sb.toString());
         }
         
-        // ListviewÇ…ÉZÉbÉg
+        // Listview„Å´„Çª„ÉÉ„Éà
         listview.setAdapter(listadapter);
-        
-        Sensor ds = sm.getDefaultSensor(Sensor.TYPE_LIGHT);
-//        sensorNameView.setText(ds.getName());
-        sm.registerListener(sensorListener, ds, SensorManager.SENSOR_DELAY_FASTEST);
         
 		super.onResume();
 	}
@@ -102,44 +87,39 @@ public class SensorTestActivity extends Activity {
     	
     	new Thread(new Runnable() {
 			public void run() {
-				// HandlerÇ÷ãÛÇÃÉÅÉbÉZÅ[ÉWëóêM
 		    	handler.sendEmptyMessage(0);
 			}
 		}).start();
 		super.onStart();
 	}
 
-    // HandlerÇÃê∂ê¨ÅBLooperÇÕÇ±Ç±Ç…ê⁄ë±Ç≥ÇÍÇÈ
 	private Handler handler = new Handler(){
     	public void handleMessage(android.os.Message msg) {
     		Toast.makeText(getApplicationContext(), "Complete", Toast.LENGTH_LONG).show();
     	};
     };
     
-    class SensorListenerEx implements SensorEventListener {
+    private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
 
-		public void onAccuracyChanged(Sensor sensor, int accuracy) {
-			// TODO Auto-generated method stub
-			textview.setText(new Integer(accuracy).toString());
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
 			
+			sm.unregisterListener(sensorListener);
+			
+			Sensor sensor = sensorList.get(arg2);
+	        Sensor ds = sm.getDefaultSensor(sensor.getType());
+	        sm.registerListener(sensorListener, ds, SensorManager.SENSOR_DELAY_FASTEST);
+	        
+	        StringBuffer sb = new StringBuffer();
+	        sb.append(sensor.getName());
+	        sb.append("\n");
+	        sb.append(sensor.getVendor());
+	        
+	        sensorInfoTextView.setText(sb);
+	        
+			Toast.makeText(getApplicationContext(), ds.getName()+ " selected.", Toast.LENGTH_LONG).show();
 		}
-
-		public void onSensorChanged(SensorEvent event) {
-			// TODO Auto-generated method stub
-			StringBuffer sb = new StringBuffer();
-			
-			sb.append(event.accuracy);
-			
-			for (float values : event.values ) {
-				sb.append("values : ");
-				sb.append(values);
-				sb.append("\n");
-			};
-
-			textview.setText(sb);
-		}
-    	
-    };
+	};
     
     private String getSensorTypeName(int sensorType) {
     	
@@ -176,7 +156,28 @@ public class SensorTestActivity extends Activity {
 		}
     	
     	return sensorTypeName;
-    	
     }
     
+    class SensorListenerEx implements SensorEventListener {
+
+		public void onAccuracyChanged(Sensor sensor, int accuracy) {
+//			accuracyTextView.setText(new Integer(accuracy).toString());
+		}
+
+		public void onSensorChanged(SensorEvent event) {
+			StringBuffer sb = new StringBuffer();
+			
+			sb.append("accuracy : ");
+			sb.append(event.accuracy);
+			sb.append("\n");
+			
+			for (float values : event.values ) {
+				sb.append("values : ");
+				sb.append(values);
+				sb.append("\n");
+			};
+
+			sensorValuesTextView.setText(sb);
+		}
+    };
 }

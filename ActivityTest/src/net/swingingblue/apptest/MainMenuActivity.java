@@ -17,7 +17,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 /**
- * ƒƒCƒ“ƒƒjƒ…[
+ * ãƒ¡ã‚¤ãƒ³ãƒ¡ãƒ‹ãƒ¥ãƒ¼
  * @author findup
  *
  */
@@ -41,8 +41,8 @@ public class MainMenuActivity extends Activity {
 				new HashMap<String, String>(){
 					{ 
 						put(keyItemName, "Geocode"); 
-						put(keyPackage, SensorTestActivity.class.getPackage().getName());
-						put(keyActivity, ".GeoTestActivity");
+						put(keyPackage, GeoTestActivity.class.getPackage().getName());
+						put(keyActivity, GeoTestActivity.class.getName());
 						}}
 				);
 	
