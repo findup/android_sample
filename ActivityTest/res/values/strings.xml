@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">SensorTest</string>
     <string name="geotest">GeoTest</string>
+    <string name="cameratest">CameraTest</string>
 </resources>

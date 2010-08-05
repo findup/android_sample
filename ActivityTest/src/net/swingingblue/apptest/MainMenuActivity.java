@@ -41,8 +41,14 @@ public class MainMenuActivity extends Activity {
 				new HashMap<String, String>(){
 					{ 
 						put(keyItemName, "Geocode"); 
-						put(keyPackage, GeoTestActivity.class.getPackage().getName());
-						put(keyActivity, GeoTestActivity.class.getName());
+						put(keyPackage, CameraView.class.getPackage().getName());
+						put(keyActivity, CameraView.class.getName());
+						}},
+				new HashMap<String, String>(){
+					{ 
+						put(keyItemName, "CameraRecorder"); 
+						put(keyPackage, CameraView.class.getPackage().getName());
+						put(keyActivity, CameraView.class.getName());
 						}}
 				);
 	

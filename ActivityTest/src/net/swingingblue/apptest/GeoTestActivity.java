@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.Iterator;
 
 import android.app.Activity;
-import android.location.Geocoder;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
@@ -80,9 +79,9 @@ public class GeoTestActivity extends Activity {
 			
 			StringBuffer sb = new StringBuffer();
 			sb.append("lat:");
-			sb.append(location.getLatitude() + "\n");
+			sb.append(Location.convert(location.getLatitude(), Location.FORMAT_SECONDS) + "\n");
 			sb.append("lon:");
-			sb.append(location.getLongitude() + "\n");
+			sb.append(Location.convert(location.getLongitude(), Location.FORMAT_SECONDS) + "\n");
 			sb.append("alt:");
 			sb.append(location.getAltitude() + "\n");
 			sb.append("acc:");
