@@ -4,12 +4,17 @@ import java.util.Date;
 import java.util.Iterator;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,61 +22,58 @@ public class GeoTestActivity extends Activity {
 
 	private LocationManager locationManager;
 	
-	private TextView sateliteNumView;
-	private TextView latitudeView;
-	private TextView longitudeView;
+	private TextView positionView;
 	private TextView gpsPrn;
 	private TextView timeView;
 	private TextView gpsStatusView;
+	private Button toMapButton;
+	
+	private double latitude;
+	private double longtitude;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
 		setContentView(R.layout.geotest);
 		
-		sateliteNumView = (TextView)findViewById(R.id.SateliteNum);
-		latitudeView = (TextView)findViewById(R.id.Latitude);
-		longitudeView = (TextView)findViewById(R.id.Longtitude);
+		positionView = (TextView)findViewById(R.id.position);
 		gpsPrn = (TextView)findViewById(R.id.GpsPrn);
 		timeView = (TextView)findViewById(R.id.Time);
 		gpsStatusView = (TextView)findViewById(R.id.GpsStatus);
+		toMapButton = (Button)findViewById(R.id.ToMapButton);
 		
 		locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
 		
-		locationManager.addGpsStatusListener(gpsListener);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
+		toMapButton.setOnClickListener(toMapButtonClick);
 		
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
 	protected void onPause() {
-		locationManager.removeUpdates(listener);
-		locationManager.removeGpsStatusListener(gpsListener);
-		
 		super.onPause();
+		
+		stopPositioning();
 	}
 
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
+		
+		startPositionig();
 	}
 
 	LocationListener listener = new LocationListener() {
 		
 		public void onStatusChanged(String provider, int status, Bundle extras) {
-			// TODO Auto-generated method stub
 			Toast.makeText(getApplicationContext(),String.valueOf(status), Toast.LENGTH_SHORT).show();
 		}
 		
 		public void onProviderEnabled(String provider) {
-			// TODO Auto-generated method stub
 			
 		}
 		
 		public void onProviderDisabled(String provider) {
-			// TODO Auto-generated method stub
 			
 		}
 		
@@ -93,9 +95,10 @@ public class GeoTestActivity extends Activity {
 			sb.append("spd:");
 			sb.append(location.getSpeed() + "\n");
 			
-			latitudeView.setText(sb);
+			positionView.setText(sb);
 			
-//			longitudeView.setText(String.valueOf(location.getLongitude()));
+			latitude = location.getLatitude();
+			longtitude = location.getLongitude();
 			
 			timeView.setText(new Date(location.getTime()).toString());
 		}
@@ -128,7 +131,6 @@ public class GeoTestActivity extends Activity {
 				
 				gpsPrn.setText(sb);
 				
-//				Toast.makeText(getApplicationContext(), "GPS_EVENT_SATELLITE_STATUS", Toast.LENGTH_SHORT).show();
 				break;
 			case GpsStatus.GPS_EVENT_STOPPED:
 				Toast.makeText(getApplicationContext(), "GPS_EVENT_STOPPED", Toast.LENGTH_SHORT).show();
@@ -141,5 +143,34 @@ public class GeoTestActivity extends Activity {
 			
 		}
 	};
+	
+	private OnClickListener toMapButtonClick = new OnClickListener() {
+		
+		public void onClick(View v) {
+			String geo = "geo:" + String.valueOf(latitude) + "," + String.valueOf(longtitude);
+			Intent mi = new Intent(Intent.ACTION_VIEW, Uri.parse(geo));
+			startActivity(mi);
+		}
+	};
+	
+	/**
+	 * 測位開始
+	 */
+	private void startPositionig() {
+		if (locationManager != null) {
+			locationManager.addGpsStatusListener(gpsListener);
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
+		}
+	}
+	
+	/**
+	 * 測位停止
+	 */
+	private void stopPositioning() {
+		if (locationManager != null) {
+			locationManager.removeUpdates(listener);
+			locationManager.removeGpsStatusListener(gpsListener);
+		}
+	}
 	
 }

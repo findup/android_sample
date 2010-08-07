@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content" android:orientation="vertical">
-<TextView android:id="@+id/Latitude" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-<TextView android:id="@+id/Longtitude" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-<TextView android:id="@+id/GpsPrn" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-<TextView android:id="@+id/Time" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-<TextView android:id="@+id/GpsStatus" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-<TextView android:id="@+id/SateliteNum" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content" android:layout_height="wrap_content"
+	android:orientation="vertical">
+	<TextView android:id="@+id/position" android:layout_width="wrap_content"
+		android:layout_height="wrap_content"></TextView>
+	<TextView android:id="@+id/GpsPrn" android:layout_width="wrap_content"
+		android:layout_height="wrap_content"></TextView>
+	<TextView android:id="@+id/Time" android:layout_width="wrap_content"
+		android:layout_height="wrap_content"></TextView>
+	<TextView android:id="@+id/GpsStatus" android:layout_width="wrap_content"
+		android:layout_height="wrap_content"></TextView>
+	<TextView android:id="@+id/SateliteNum" android:layout_width="wrap_content"
+		android:layout_height="wrap_content"></TextView>
 
+	<Button android:text="@string/toMap" android:id="@+id/ToMapButton"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 </LinearLayout>
