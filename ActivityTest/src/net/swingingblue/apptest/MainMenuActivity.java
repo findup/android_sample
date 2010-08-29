@@ -49,6 +49,12 @@ public class MainMenuActivity extends Activity {
 						put(keyItemName, "CameraRecorder"); 
 						put(keyPackage, CameraView.class.getPackage().getName());
 						put(keyActivity, CameraView.class.getName());
+						}},
+				new HashMap<String, String>(){
+					{ 
+						put(keyItemName, "CameraRecorder to Socket"); 
+						put(keyPackage, CameraViewNetwork.class.getPackage().getName());
+						put(keyActivity, CameraViewNetwork.class.getName());
 						}}
 				);
 	
