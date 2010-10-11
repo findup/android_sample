@@ -78,29 +78,7 @@ public class GeoTestActivity extends Activity {
 		}
 		
 		public void onLocationChanged(Location location) {
-			
-			StringBuffer sb = new StringBuffer();
-			sb.append("lat:");
-			sb.append(Location.convert(location.getLatitude(), Location.FORMAT_SECONDS) + "\n");
-			sb.append("lon:");
-			sb.append(Location.convert(location.getLongitude(), Location.FORMAT_SECONDS) + "\n");
-			sb.append("alt:");
-			sb.append(location.getAltitude() + "\n");
-			sb.append("acc:");
-			sb.append(location.getAccuracy() + "\n");
-			sb.append("prv:");
-			sb.append(location.getProvider() + "\n");
-			sb.append("ber:");
-			sb.append(location.getBearing() + "\n");
-			sb.append("spd:");
-			sb.append(location.getSpeed() + "\n");
-			
-			positionView.setText(sb);
-			
-			latitude = location.getLatitude();
-			longtitude = location.getLongitude();
-			
-			timeView.setText(new Date(location.getTime()).toString());
+			dispLocation(location);
 		}
 	};
 	
@@ -159,7 +137,9 @@ public class GeoTestActivity extends Activity {
 	private void startPositionig() {
 		if (locationManager != null) {
 			locationManager.addGpsStatusListener(gpsListener);
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
+			Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			dispLocation(location);
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, listener);
 		}
 	}
 	
@@ -171,6 +151,36 @@ public class GeoTestActivity extends Activity {
 			locationManager.removeUpdates(listener);
 			locationManager.removeGpsStatusListener(gpsListener);
 		}
+	}
+	
+	private void dispLocation(Location location) {
+		
+		if (location != null) {
+				
+			StringBuffer sb = new StringBuffer();
+			sb.append("lat:");
+			sb.append(Location.convert(location.getLatitude(), Location.FORMAT_SECONDS) + "\n");
+			sb.append("lon:");
+			sb.append(Location.convert(location.getLongitude(), Location.FORMAT_SECONDS) + "\n");
+			sb.append("alt:");
+			sb.append(location.getAltitude() + "\n");
+			sb.append("acc:");
+			sb.append(location.getAccuracy() + "\n");
+			sb.append("prv:");
+			sb.append(location.getProvider() + "\n");
+			sb.append("ber:");
+			sb.append(location.getBearing() + "\n");
+			sb.append("spd:");
+			sb.append(location.getSpeed() + "\n");
+			
+			positionView.setText(sb);
+			
+			latitude = location.getLatitude();
+			longtitude = location.getLongitude();
+			
+			timeView.setText(new Date(location.getTime()).toString());
+		}
+
 	}
 	
 }
