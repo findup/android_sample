@@ -1,9 +1,19 @@
 package net.swingingblue.apptest;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import net.swingingblue.apptest.adapter.ImageListArrayAdapter;
+import net.swingingblue.apptest.data.ImageListData;
+import net.swingingblue.apptest.util.BitmapUtil;
+
+import android.R.string;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -13,12 +23,20 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class PicturePickerActivity extends Activity {
 
+	// 
+	private static final String LOG_TAG = PicturePickerActivity.class.getName();
+	
+	// 画面部品
 	private Button btnPick;
 	private ListView listview;
-	private ArrayAdapter<String> adapter;
+	private TextView textview;
+	
+//	private ArrayAdapter<Bitmap> adapter;
+	private ImageListArrayAdapter listadapter;
 	
 	private int PICK_REQUEST_CODE = 1234;
 	
@@ -32,8 +50,13 @@ public class PicturePickerActivity extends Activity {
 		
 		// リスト部品初期化
 		listview = (ListView)findViewById(R.id.ListView);
-		adapter = new ArrayAdapter<String>(this, R.layout.list);
-		listview.setAdapter(adapter);
+//		adapter = new ArrayAdapter<Bitmap>(this, R.layout.list_picture);
+
+		// リスト部品初期化
+		listadapter = new ImageListArrayAdapter(this, R.layout.list_picture);
+		
+		listview.setAdapter(listadapter);
+		textview = (TextView)findViewById(R.id.TextViewLog);
 		
 		super.onCreate(savedInstanceState);
 	}
@@ -48,8 +71,29 @@ public class PicturePickerActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		ContentResolver cr = getContentResolver();
-		Cursor cl = MediaStore.Images.Media.query(cr, null, null);
+		Cursor cl = MediaStore.Images.Media.query(cr, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null);
 
+		cl.moveToFirst();
+		int count = cl.getCount();
+//		textview.append("count " + count + "\n");
+
+		for (int i = 1; i < count; i++ ) {
+			// ファイルパス名を表示
+//			textview.append(cl.getString(1) + "\n");
+			Log.d(LOG_TAG, "now " + i);
+
+			ImageListData listdata = new ImageListData();
+			
+			// 画像へのUriは、EXTERNAL_CONTENT_URIにgeString(0)で取れるidを付けることで指定ができる
+			Uri uri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cl.getString(0));
+			// リスト用データ組み立て
+//			listdata.setBitmap(BitmapUtil.getBitmap(this, uri));
+			listdata.setUri(uri);
+			listdata.setPath(cl.getString(1));
+
+			listadapter.add(listdata);
+			cl.moveToNext();
+		}
 		
 		super.onResume();
 	}
@@ -76,14 +120,9 @@ public class PicturePickerActivity extends Activity {
 		if (requestCode == PICK_REQUEST_CODE) {
 			Log.d(this.getClass().getName(), "resultCode " + resultCode);
 			Uri uri = data.getData();
-			
-			adapter.add(uri.getPath());
-			
 		}
 		
 		super.onActivityResult(requestCode, resultCode, data);
 	}
-	
-	
 	
 }
