@@ -13,7 +13,7 @@ import android.net.Uri;
 public class TestProvider extends ContentProvider {
 
 	@Override
-	public int delete(Uri arg0, String arg1, String[] arg2) {
+	public int delete(Uri uri, String selection, String[] selectionArgs) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

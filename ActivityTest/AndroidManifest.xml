@@ -24,7 +24,8 @@
         <activity android:name="CameraViewNetwork"
                   android:label="@string/cameratestnet" android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation">
         </activity>
-    </application>
+    <activity android:name="PicturePickerActivity"></activity>
+</application>
 
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
