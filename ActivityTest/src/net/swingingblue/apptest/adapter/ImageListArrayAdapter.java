@@ -80,7 +80,7 @@ public class ImageListArrayAdapter extends ArrayAdapter<ImageListData> {
 		imageview.setImageBitmap(null);
 		// 対応する番号のインスタンスを取り出し
 		final ImageListData listdata = getItem(position);
-		final Handler handler = new Handler();	
+		final Handler handler = view.getHandler();	
 		
 		execute.submit(new Runnable() {
 			
