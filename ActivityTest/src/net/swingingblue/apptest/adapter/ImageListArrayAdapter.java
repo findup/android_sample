@@ -100,7 +100,6 @@ public class ImageListArrayAdapter extends ArrayAdapter<ImageListData> {
 		
 		// Layoutをオブジェクトにすると、findViewById()が使えるので目的のUI部品を指定する
 		// 対応する番号のインスタンスを取り出し
-
 		if (listdata.getBitmap() == null) {
 			
 //			async.execute(listdata);

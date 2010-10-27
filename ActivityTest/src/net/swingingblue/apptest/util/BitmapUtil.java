@@ -15,6 +15,9 @@ import android.util.Log;
  *
  */
 public class BitmapUtil {
+
+	private static final int THUMBNAIL_HEIGHT = 128;
+	private static final int THUMBNAIL_WIDTH = 128;
 	
 	private static final String LOG_TAG = BitmapUtil.class.getSimpleName();
 	
