@@ -2,9 +2,9 @@
 <LinearLayout android:id="@+id/LinearLayout01"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	xmlns:android="http://schemas.android.com/apk/res/android">
+	<ImageView android:id="@+id/ImageViewBitmap"
+		android:layout_width="wrap_content" android:layout_height="wrap_content" android:minHeight="128px" android:minWidth="128px"></ImageView>
 	<TextView android:text="@+id/TextViewPath" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:id="@+id/TextViewPath"></TextView>
-	<ImageView android:id="@+id/ImageViewBitmap"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"></ImageView>
 
 </LinearLayout>

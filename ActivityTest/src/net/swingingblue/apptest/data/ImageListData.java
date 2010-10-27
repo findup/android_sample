@@ -1,5 +1,7 @@
 package net.swingingblue.apptest.data;
 
+import java.lang.ref.WeakReference;
+
 import android.graphics.Bitmap;
 import android.net.Uri;
 

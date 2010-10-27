@@ -8,6 +8,7 @@ import java.util.ListIterator;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;

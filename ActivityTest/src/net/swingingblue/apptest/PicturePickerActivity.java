@@ -1,41 +1,32 @@
 package net.swingingblue.apptest;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import net.swingingblue.apptest.adapter.ImageListArrayAdapter;
 import net.swingingblue.apptest.data.ImageListData;
-import net.swingingblue.apptest.util.BitmapUtil;
-
-import android.R.string;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class PicturePickerActivity extends Activity {
 
-	// 
-	private static final String LOG_TAG = PicturePickerActivity.class.getName();
+	private static final String LOG_TAG = PicturePickerActivity.class.getSimpleName();
 	
 	// 画面部品
 	private Button btnPick;
 	private ListView listview;
 	private TextView textview;
 	
-//	private ArrayAdapter<Bitmap> adapter;
 	private ImageListArrayAdapter listadapter;
 	
 	private int PICK_REQUEST_CODE = 1234;
@@ -50,12 +41,25 @@ public class PicturePickerActivity extends Activity {
 		
 		// リスト部品初期化
 		listview = (ListView)findViewById(R.id.ListView);
-//		adapter = new ArrayAdapter<Bitmap>(this, R.layout.list_picture);
 
 		// リスト部品初期化
 		listadapter = new ImageListArrayAdapter(this, R.layout.list_picture);
-		
+
 		listview.setAdapter(listadapter);
+		listview.setOnScrollListener(new OnScrollListener() {
+			
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				Log.d(LOG_TAG, "onScrollStateChanged state " + scrollState);
+				
+				view.invalidate();
+			}
+			
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+//				Log.d(LOG_TAG, String.format("onScroll firstVisibleItem: %d, visibleItemCount %d, totalItemCount: %d", firstVisibleItem, visibleItemCount, totalItemCount));
+			}
+		});
+		
 		textview = (TextView)findViewById(R.id.TextViewLog);
 		
 		super.onCreate(savedInstanceState);
@@ -79,15 +83,13 @@ public class PicturePickerActivity extends Activity {
 
 		for (int i = 1; i < count; i++ ) {
 			// ファイルパス名を表示
-//			textview.append(cl.getString(1) + "\n");
-			Log.d(LOG_TAG, "now " + i);
+			Log.d(LOG_TAG, "now " + i + " " + cl.getString(1));
 
 			ImageListData listdata = new ImageListData();
 			
 			// 画像へのUriは、EXTERNAL_CONTENT_URIにgeString(0)で取れるidを付けることで指定ができる
 			Uri uri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cl.getString(0));
 			// リスト用データ組み立て
-//			listdata.setBitmap(BitmapUtil.getBitmap(this, uri));
 			listdata.setUri(uri);
 			listdata.setPath(cl.getString(1));
 
@@ -100,7 +102,6 @@ public class PicturePickerActivity extends Activity {
 
 	@Override
 	protected void onStart() {
-		// TODO Auto-generated method stub
 		super.onStart();
 	}
 

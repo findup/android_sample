@@ -12,6 +12,7 @@ import net.swingingblue.apptest.util.BitmapUtil;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 /**
@@ -29,10 +31,19 @@ import android.widget.TextView;
  */
 public class ImageListArrayAdapter extends ArrayAdapter<ImageListData> {
 
-	private static final String LOG_TAG = ImageListArrayAdapter.class.getName();
+	static class ViewHolder {  
+	    TextView text;  
+	    ImageView icon;  
+	};
+	
+	private static final String LOG_TAG = ImageListArrayAdapter.class.getSimpleName();
 	
 	LayoutInflater inflater;
 	ExecutorService execute = Executors.newSingleThreadExecutor();
+
+	AsyncPictureDecoder async = new AsyncPictureDecoder();
+	
+	final Handler handler = new Handler();	
 	
 	/**
 	 * すでにList<ImageListData>が存在する場合に指定するコンストラクタ
@@ -64,44 +75,117 @@ public class ImageListArrayAdapter extends ArrayAdapter<ImageListData> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
-		Log.d(LOG_TAG, "position " + position);
+//		Log.d(LOG_TAG, "position " + position);
+		ViewHolder holder;
 		
 		// convertviewに値が入ってくるのかは不明
 		View view = convertView;
+		final ImageListData listdata = getItem(position);
+		
 		if (view == null) {
 			Log.d(LOG_TAG, "Create new convertview.");
 			// list_pictureレイアウトをインスタンス化
 			view = inflater.inflate(R.layout.list_picture, null);
+			
+			holder = new ViewHolder();
+			holder.icon = (ImageView)view.findViewById(R.id.ImageViewBitmap);
+			holder.text = (TextView)view.findViewById(R.id.TextViewPath);
+			
+			view.setTag(holder);
+		} else {
+			holder = (ViewHolder)view.getTag();
 		}
 		
-		final Context context = view.getContext();
+		holder.icon.setImageDrawable(view.getContext().getResources().getDrawable(R.drawable.spinner_white_48));
+		
 		// Layoutをオブジェクトにすると、findViewById()が使えるので目的のUI部品を指定する
-		final ImageView imageview = (ImageView)view.findViewById(R.id.ImageViewBitmap);
-		imageview.setImageBitmap(null);
 		// 対応する番号のインスタンスを取り出し
-		final ImageListData listdata = getItem(position);
-		final Handler handler = new Handler();	
-		
-		execute.submit(new Runnable() {
+
+		if (listdata.getBitmap() == null) {
 			
-			public void run() {
-				try {
-					final Bitmap bitmap = BitmapUtil.getBitmap(context, listdata.getUri());
-					
-					handler.post(new Runnable() {
-						public void run() {
-							imageview.setImageBitmap(bitmap);
-						}
-					});
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}});
+//			async.execute(listdata);
+			
+			execute.submit(new ThreadPictureDecoder(listdata));
 		
-		TextView textview = (TextView)view.findViewById(R.id.TextViewPath);
-		textview.setText(listdata.getPath());
+		} else {
+			holder.icon.setImageBitmap(listdata.getBitmap());
+		}
+		
+		holder.text.setText(listdata.getUri().toString());
 		
 		return view;
 	}
 
+	
+	private class AsyncPictureDecoder extends AsyncTask<ImageListData, ImageListData, ImageListData> {
+
+		@Override
+		protected ImageListData doInBackground(ImageListData... param) {
+			
+			try {
+				final ImageListData listdata = param[0];
+				Log.d(LOG_TAG, "Thread running " + listdata.getUri());
+				
+				final Bitmap bitmap = BitmapUtil.getBitmap(getContext(), listdata.getUri());
+				listdata.setBitmap(bitmap);
+				
+				Log.d(LOG_TAG, "Thread end " + listdata.getUri());
+			} catch (IOException e1) {
+				Log.e(LOG_TAG, "Error", e1);
+				e1.printStackTrace();
+			} catch (Exception e) {
+				Log.e(LOG_TAG, "Error", e);
+				e.printStackTrace();
+			}
+			
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(ImageListData result) {
+			Log.d(LOG_TAG, "Handler running " + result.getUri());
+			notifyDataSetChanged();
+			
+			super.onPostExecute(result);
+		}
+	}
+	
+	private class ThreadPictureDecoder implements Runnable {
+
+		private ImageListData listdata;
+		
+		
+		@SuppressWarnings("unused")
+		public ThreadPictureDecoder(ImageListData listdata) {
+			super();
+			this.listdata = listdata;
+		}
+
+		public void run() {
+			try {
+				Log.d(LOG_TAG, "Thread running " + listdata.getUri());
+				
+				if (listdata.getBitmap() == null) {
+					Bitmap bitmap = BitmapUtil.getBitmap(getContext(), listdata.getUri());
+					listdata.setBitmap(bitmap);
+				
+					handler.post(new Runnable() {
+						
+						public void run() {
+							Log.d(LOG_TAG, "Handler running " + listdata.getUri());
+							notifyDataSetChanged();
+						}
+					});
+				} else {
+					Log.d(LOG_TAG, "No decorded.");
+				}				
+				Log.d(LOG_TAG, "Thread end " + listdata.getUri());
+			} catch (Exception e) {
+				Log.e(LOG_TAG, "Error", e);
+				e.printStackTrace();
+			}
+
+		}
+	}
+	
 }
