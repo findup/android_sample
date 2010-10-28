@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class PicturePickerActivity extends Activity {
 
@@ -73,7 +75,15 @@ public class PicturePickerActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
+		
+		// SDが刺さっているかチェック
+		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
+			Toast.makeText(this, "No SD Card.", Toast.LENGTH_SHORT).show();
+			super.onResume();
+			finish();
+			return;
+		}
+		
 		ContentResolver cr = getContentResolver();
 		Cursor cl = MediaStore.Images.Media.query(cr, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null);
 

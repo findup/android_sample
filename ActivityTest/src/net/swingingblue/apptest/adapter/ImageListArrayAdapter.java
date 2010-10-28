@@ -153,8 +153,6 @@ public class ImageListArrayAdapter extends ArrayAdapter<ImageListData> {
 
 		private ImageListData listdata;
 		
-		
-		@SuppressWarnings("unused")
 		public ThreadPictureDecoder(ImageListData listdata) {
 			super();
 			this.listdata = listdata;
@@ -171,7 +169,7 @@ public class ImageListArrayAdapter extends ArrayAdapter<ImageListData> {
 					handler.post(new Runnable() {
 						
 						public void run() {
-							Log.d(LOG_TAG, "Handler running " + listdata.getUri());
+//							Log.d(LOG_TAG, "Handler running " + listdata.getUri());
 							notifyDataSetChanged();
 						}
 					});

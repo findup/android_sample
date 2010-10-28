@@ -12,7 +12,7 @@ import android.net.Uri;
  */
 public class ImageListData {
 
-	// Bitmapデータ
+	// Bitmapデータ（サムネイル）
 	private Bitmap bitmap;
 	
 	// Uri

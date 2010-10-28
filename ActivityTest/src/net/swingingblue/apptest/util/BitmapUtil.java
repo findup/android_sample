@@ -16,9 +16,6 @@ import android.util.Log;
  */
 public class BitmapUtil {
 
-	private static final int THUMBNAIL_HEIGHT = 128;
-	private static final int THUMBNAIL_WIDTH = 128;
-	
 	private static final String LOG_TAG = BitmapUtil.class.getSimpleName();
 	
 	private static final int MAX_THUMBNAIL_HEIGHT = 128;
@@ -31,8 +28,6 @@ public class BitmapUtil {
 	 * @throws IOException
 	 */
 	public final static synchronized Bitmap getBitmap(Context context, Uri uri) throws IOException {
-		
-//		Log.d(LOG_TAG, "getBitmap() start. " + uri);
 		
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inPurgeable = true;
@@ -57,13 +52,9 @@ public class BitmapUtil {
 		
 		options.inJustDecodeBounds = false;
 		
-//		Log.d(LOG_TAG, "getBitmap() fixedW: " + fixedWidth + " fixedH: " + fixedHeight + " inSampleSize: " + options.inSampleSize);
-
 		is = context.getContentResolver().openInputStream(uri);
 		Bitmap bitmap = BitmapFactory.decodeStream(is, null, options);
 		is.close();
-
-//		Log.d(LOG_TAG, "getBitmap() end.");
 
 		return bitmap;
 	}
