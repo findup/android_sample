@@ -62,6 +62,12 @@ public class MainMenuActivity extends Activity {
 						put(keyItemName, "Picture Picker"); 
 						put(keyPackage, PicturePickerActivity.class.getPackage().getName());
 						put(keyActivity, PicturePickerActivity.class.getName());
+						}},
+				new HashMap<String, String>(){
+					{ 
+						put(keyItemName, "Map view"); 
+						put(keyPackage, MapViewActivity.class.getPackage().getName());
+						put(keyActivity, MapViewActivity.class.getName());
 						}}
 				);
 	

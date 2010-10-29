@@ -15,7 +15,9 @@ public class MapViewActivity extends MapActivity {
 		
 		MapView mapView = (MapView)findViewById(R.id.map);
 		mapView.setBuiltInZoomControls(true);
-		
+		mapView.setFocusable(true);
+		mapView.setEnabled(true);
+		mapView.setClickable(true);
 	}
 
 	@Override
