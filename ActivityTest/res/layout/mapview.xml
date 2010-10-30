@@ -1,23 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content" android:layout_height="wrap_content">
 
-<!--
-<com.google.android.maps.MapView
-        android:id="@+id/map"
-        android:apiKey="02zbysPNjrIKAG7V8cw7zzELRFQXbvADk3eQv4w"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-/>
--->
- <com.google.android.maps.MapView
-        android:id="@+id/map"
-        android:apiKey="02zbysPNjrILC9CiWbWvfBC3KAV-Hrbm6KUAlXw"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-/>
+	<TableLayout android:id="@+id/TableLayout01"
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<TableRow android:id="@+id/TableRow01" android:layout_width="wrap_content"
+			android:layout_height="wrap_content"></TableRow>
+		<EditText android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="博多駅南3丁目"
+			android:id="@+id/EditTextSource"></EditText>
+		<EditText android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:id="@+id/EditTextDestination"
+			android:text="天神"></EditText>
+		<Button android:id="@+id/BtnDirection" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="探索"></Button>
+		<TableRow android:id="@+id/TableRow02" android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			<com.google.android.maps.MapView
+				android:id="@+id/map" android:apiKey="02zbysPNjrIKAG7V8cw7zzELRFQXbvADk3eQv4w"
+				android:layout_width="fill_parent" android:layout_height="fill_parent" />
+		</TableRow>
 
-        
+	</TableLayout>
+	<!-- <com.google.android.maps.MapView android:id="@+id/map" android:apiKey="02zbysPNjrILC9CiWbWvfBC3KAV-Hrbm6KUAlXw" 
+		android:layout_width="fill_parent" android:layout_height="fill_parent" /> -->
+
+
+
+
 </LinearLayout>
